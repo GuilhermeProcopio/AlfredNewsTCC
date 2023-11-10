@@ -23,7 +23,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
         return ask_utils.is_request_type("LaunchRequest")(handler_input)
         
     def handle(self, handler_input):
-       try:
+          try:
             accesstoken = str(handler_input.request_envelope.context.system.api_access_token)
             api_access_token = "Bearer " + accesstoken 
             headers = {"Authorization": api_access_token}
@@ -35,7 +35,6 @@ class LaunchRequestHandler(AbstractRequestHandler):
             
             pattern = re.compile(r'\bACCESS_DENIED\b')
             output = pattern.search(str(username))
-            
             if str(output.group()) == "ACCESS_DENIED":
                 speak_output = "Aceite o compartilhamento do email e do nome do usuário"
                 return (
@@ -44,16 +43,8 @@ class LaunchRequestHandler(AbstractRequestHandler):
                 .ask(speak_output)
                 .response
             )
-            else:    
-                speak_output = "Olá\n" + str(username) + "\nsuas notícias são:\n" + str(news.text) 
-                return (
-                    handler_input.response_builder
-                    .speak(speak_output)
-                    .ask(speak_output)
-                    .response
-                )
         except:
-            speak_output = "Ocorreu um erro para buscar suas notícias"
+            speak_output = "Olá\n" + str(username) + "\nsuas notícias são:\n" + str(news.text) 
             return (
                 handler_input.response_builder
                 .speak(speak_output)
