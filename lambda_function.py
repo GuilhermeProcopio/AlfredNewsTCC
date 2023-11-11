@@ -14,7 +14,7 @@ from ask_sdk_core.api_client import DefaultApiClient
 from ask_sdk_model import Response
 from ask_sdk_model.services import ServiceException
 
-news_api = "https://prod-186.westus.logic.azure.com/workflows/91f4474d5ba64a7289aa0d08e447769f/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=sukwMrfeugQ36Y-N2aPKG7mtkr8Z2FP2Eg35tEKZSkY"
+news_api = "https://prod-125.westus.logic.azure.com/workflows/5701ecc5d3a64927a1cdbdd75d36b8d9/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=pslH-KjmE8GOJ7gEBaJj2UARwikcxYZHWTL6JBo0JD4"
 username_api = "https://api.amazonalexa.com/v2/accounts/~current/settings/Profile.givenName"
 useremail_endpoint = "https://api.amazonalexa.com/v2/accounts/~current/settings/Profile.email"
 
