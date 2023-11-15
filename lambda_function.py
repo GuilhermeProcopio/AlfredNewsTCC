@@ -13,6 +13,7 @@ from ask_sdk_core.handler_input import HandlerInput
 from ask_sdk_core.api_client import DefaultApiClient
 from ask_sdk_model import Response
 from ask_sdk_model.services import ServiceException
+import re
 
 news_api = "https://prod-125.westus.logic.azure.com/workflows/5701ecc5d3a64927a1cdbdd75d36b8d9/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=pslH-KjmE8GOJ7gEBaJj2UARwikcxYZHWTL6JBo0JD4"
 username_api = "https://api.amazonalexa.com/v2/accounts/~current/settings/Profile.givenName"
@@ -23,7 +24,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
         return ask_utils.is_request_type("LaunchRequest")(handler_input)
         
     def handle(self, handler_input):
-          try:
+        try:
             accesstoken = str(handler_input.request_envelope.context.system.api_access_token)
             api_access_token = "Bearer " + accesstoken 
             headers = {"Authorization": api_access_token}
@@ -44,8 +45,17 @@ class LaunchRequestHandler(AbstractRequestHandler):
                 .response
             )
         except:
-            speak_output = "Olá\n" + str(username) + "\nsuas notícias são:\n" + str(news.text) 
-            return (
+            if str(news.text) == "Nenhuma notícia encontrada":
+                speak_output = 'Faça cadastro no site do Alfred News para receber suas notícias, usando o email cadastrado na Alexa.'
+                return (
+                handler_input.response_builder
+                .speak(speak_output)
+                .ask(speak_output)
+                .response
+            )
+            else:
+                speak_output = "Olá\n" + str(username) + "\nsuas notícias são:\n" + str(news.text) 
+                return (
                 handler_input.response_builder
                 .speak(speak_output)
                 .ask(speak_output)
@@ -56,7 +66,7 @@ class HelpIntentHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> bool
         return ask_utils.is_intent_name("AMAZON.HelpIntent")(handler_input)
     def handle(self, handler_input):
-        speak_output = "You can say hello to me! How can I help?"
+        speak_output = "Talvez você não tenha cadastro no site do Alfred, ou suas notícias não estão prontas. Você já se cadastrou no site?"
         return (
             handler_input.response_builder
                 .speak(speak_output)
@@ -73,7 +83,7 @@ class CancelOrStopIntentHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        speak_output = "Goodbye!"
+        speak_output = "Tchauzinho!"
 
         return (
             handler_input.response_builder
@@ -90,8 +100,8 @@ class FallbackIntentHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         logger.info("In FallbackIntentHandler")
-        speech = "Hmm, I'm not sure. You can say Hello or Help. What would you like to do?"
-        reprompt = "I didn't catch that. What can I help you with?"
+        speech = "Não tenho certeza, peça ajuda pra mim, dizendo: 'pode me judar'"
+        reprompt = "Não entendi, como posso ajudar?"
 
         return handler_input.response_builder.speak(speech).ask(reprompt).response
 
@@ -122,7 +132,7 @@ class IntentReflectorHandler(AbstractRequestHandler):
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
         intent_name = ask_utils.get_intent_name(handler_input)
-        speak_output = "You just triggered " + intent_name + "."
+        speak_output = "A skill foi acionada " + intent_name + "." + "\nmas não está mostrando o comportamento adequeado no momento, aguarde para futura correções."
 
         return (
             handler_input.response_builder
